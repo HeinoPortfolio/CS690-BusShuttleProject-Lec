@@ -6,29 +6,30 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.Write("Please select mode(driver OR manager): ");
-        string mode= Console.ReadLine();
+        
+        string mode= AskForInput("Please select mode(driver OR manager): ");
 
         if (mode =="driver"){
 
             string command;
 
             do{
-                Console.Write("Enter stop name: ");
-                string stopName = Console.ReadLine();
+                
+                string stopName = AskForInput("Enter stop name: ");
 
-                Console.Write("Enter numbered of boarded passengers: ");
-                int boarded = int.Parse(Console.ReadLine());
-
+                int boarded = int.Parse(AskForInput("Enter numbered of boarded passengers: "));
+            
                 // Append data to a file
                 File.AppendAllText("passenger-data.txt", stopName+":"+boarded+Environment.NewLine);
                 
-                Console.Write("Enter command (end or continue): ");
-                command = Console.ReadLine();
+                command = AskForInput("Enter command (end or continue): ");
 
             }while(command != "end");
-
         }
-
+    }
+    public static string AskForInput(string message)
+    {
+        Console.Write(message);
+        return Console.ReadLine();
     }
 }
