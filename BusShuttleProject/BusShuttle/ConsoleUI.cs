@@ -12,6 +12,10 @@ public class ConsoleUI
     // List of stops
     List<Stop> stops;
 
+    // List of drivers
+    List<Driver> drivers;
+
+
     public ConsoleUI()
     {
         fileSaver = new FileSaver("passenger-data.txt");
@@ -37,6 +41,10 @@ public class ConsoleUI
         loops[0].Stops.Add(stops[3]);
         loops[0].Stops.Add(stops[4]);
 
+        // Add drivers to a list
+        drivers = new List<Driver>();
+        drivers.Add(new Driver("Huseyin Ergin"));
+        drivers.Add(new Driver("Jane Doe"));
     }
     public void Show()
     {
@@ -49,6 +57,13 @@ public class ConsoleUI
 
         if (mode =="driver"){
 
+
+            // Select a driver
+            var selectedDriver = AnsiConsole.Prompt(new SelectionPrompt<Driver>()
+                .Title("Select a driver").AddChoices(drivers));
+            Console.WriteLine("Your selected driver: " + selectedDriver.Name); 
+
+            // Select a loop
             Loop selectedLoop = AnsiConsole.Prompt(new SelectionPrompt<Loop>()
                 .Title("Select a loop").AddChoices(loops));
             Console.WriteLine("Your selected loop: " + selectedLoop.Name); 
@@ -56,7 +71,7 @@ public class ConsoleUI
             string command;
 
             do{
-            
+                // Select a stop 
                 Stop selectedStop = AnsiConsole.Prompt(new SelectionPrompt<Stop>()
                     .Title("Select a stop")
                     .AddChoices(selectedLoop.Stops));
@@ -64,9 +79,14 @@ public class ConsoleUI
 
                 int boarded = int.Parse(AskForInput("Enter numbered of boarded passengers: "));
 
-                // Append data to a file
-                fileSaver.AppendLine(selectedStop.Name+":"+boarded);
+                // Passenger data
+                PassengerData data = new PassengerData(boarded,
+                    selectedStop, selectedLoop, selectedDriver);
                 
+                // Append data to a file
+                fileSaver.AppendData(data);
+                
+                // Select whether to continue or end
                 command = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title("What's next?")
                     .AddChoices(new[]
