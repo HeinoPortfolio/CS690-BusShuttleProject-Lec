@@ -26,6 +26,11 @@ public class Driver
     {
         this.Name = name;
     }
+
+    public override string ToString()
+    {
+        return this.Name;
+    }
 } // end Driver
 
 public class Loop
