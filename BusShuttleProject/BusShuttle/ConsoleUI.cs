@@ -4,47 +4,14 @@ namespace BusShuttle;
 public class ConsoleUI
 
 {
-    FileSaver fileSaver;
+    //FileSaver fileSaver;
 
-    // List of loops
-    List<Loop> loops;
-
-    // List of stops
-    List<Stop> stops;
-
-    // List of drivers
-    List<Driver> drivers;
-
+    DataManager dataManager;
 
     public ConsoleUI()
     {
-        fileSaver = new FileSaver("passenger-data.txt");
-        // Create the loops
-        loops = new List<Loop>();
-        // Add loops to a list
-        loops.Add(new Loop("Red"));
-        loops.Add(new Loop("Green"));
-        loops.Add(new Loop("Blue"));
-
-        // Add stops to a list
-        stops = new List<Stop>();
-        stops.Add(new Stop("Music"));  
-        stops.Add(new Stop("Towers"));
-        stops.Add(new Stop("Oakwood"));
-        stops.Add(new Stop("Anthony"));
-        stops.Add(new Stop("Letterman"));
-
-        // Assign them to the first loop
-        loops[0].Stops.Add(stops[0]);
-        loops[0].Stops.Add(stops[1]);
-        loops[0].Stops.Add(stops[2]);
-        loops[0].Stops.Add(stops[3]);
-        loops[0].Stops.Add(stops[4]);
-
-        // Add drivers to a list
-        drivers = new List<Driver>();
-        drivers.Add(new Driver("Huseyin Ergin"));
-        drivers.Add(new Driver("Jane Doe"));
+        // Instantiate the data manager
+        dataManager = new DataManager();
     }
     public void Show()
     {
@@ -60,12 +27,12 @@ public class ConsoleUI
 
             // Select a driver
             var selectedDriver = AnsiConsole.Prompt(new SelectionPrompt<Driver>()
-                .Title("Select a driver").AddChoices(drivers));
+                .Title("Select a driver").AddChoices(dataManager.Drivers));
             Console.WriteLine("Your selected driver: " + selectedDriver.Name); 
 
             // Select a loop
             Loop selectedLoop = AnsiConsole.Prompt(new SelectionPrompt<Loop>()
-                .Title("Select a loop").AddChoices(loops));
+                .Title("Select a loop").AddChoices(dataManager.Loops));
             Console.WriteLine("Your selected loop: " + selectedLoop.Name); 
             
             string command;
@@ -77,14 +44,14 @@ public class ConsoleUI
                     .AddChoices(selectedLoop.Stops));
                 Console.WriteLine("Your selected stop: " + selectedStop.Name); 
 
-                int boarded = int.Parse(AskForInput("Enter numbered of boarded passengers: "));
+                int boarded = AnsiConsole.Prompt(new TextPrompt<int>("Enter number of boarded passengers: "));
 
                 // Passenger data
                 PassengerData data = new PassengerData(boarded,
                     selectedStop, selectedLoop, selectedDriver);
                 
                 // Append data to a file
-                fileSaver.AppendData(data);
+                dataManager.AddNewPassengerData(data);
                 
                 // Select whether to continue or end
                 command = AnsiConsole.Prompt(new SelectionPrompt<string>()
