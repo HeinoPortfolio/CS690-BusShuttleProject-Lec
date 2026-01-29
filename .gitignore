@@ -6,7 +6,7 @@
 # dotenv files
 .env
 
-*.txt
+passenger-data.txt
 .editorconfig
 
 # User-specific files

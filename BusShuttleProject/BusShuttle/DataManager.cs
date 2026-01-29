@@ -1,4 +1,7 @@
- namespace BusShuttle;
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
+
+namespace BusShuttle;
 
  public class DataManager
 {
@@ -26,20 +29,22 @@
         Loops.Add(new Loop("Green"));
         Loops.Add(new Loop("Blue"));
 
-        // Add Stops to a list
         Stops = new List<Stop>();
-        Stops.Add(new Stop("Music"));  
-        Stops.Add(new Stop("Towers"));
-        Stops.Add(new Stop("Oakwood"));
-        Stops.Add(new Stop("Anthony"));
-        Stops.Add(new Stop("Letterman"));
+
+        // Read the stops from the file
+        var stopsFileContent = File.ReadAllLines("stops.txt");
+        // Add Stops to a list
+        foreach (var stopName in stopsFileContent)
+        {
+            Stops.Add(new Stop(stopName));
+        }
+
 
         // Assign them to the first loop
-        Loops[0].Stops.Add(Stops[0]);
-        Loops[0].Stops.Add(Stops[1]);
-        Loops[0].Stops.Add(Stops[2]);
-        Loops[0].Stops.Add(Stops[3]);
-        Loops[0].Stops.Add(Stops[4]);
+        for(int index =0; index < Stops.Count; index++)
+        {
+             Loops[0].Stops.Add(Stops[index]);
+        }
 
         // Add Drivers to a list
         Drivers = new List<Driver>();
@@ -55,5 +60,33 @@
        this.PassengerData.Add(data);
        // Save to the file
        this.fileSaver.AppendData(data);
+    }
+
+
+    // Add a stop to the list
+    public void AddStop(Stop stop)
+    {
+       Stops.Add(stop); 
+       //Synchonize the stops
+       SynchronizeStops();
+    }
+
+    // Remove a stop from a list
+    public void RemoveStop(Stop stop)
+    {
+        Stops.Remove(stop);
+        //Synchonize the stops
+        SynchronizeStops();
+    }
+
+    // Synchonize the stops
+    public void SynchronizeStops()
+    {
+        File.Delete("stops.txt");
+
+        foreach(var stop in Stops)
+        {
+            File.AppendAllText("stops.txt", stop.Name+Environment.NewLine);
+        }
     }
 }
