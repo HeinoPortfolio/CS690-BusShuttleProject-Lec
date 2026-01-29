@@ -1,12 +1,14 @@
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace BusShuttle;
 public class ConsoleUI
 
 {
-    //FileSaver fileSaver;
 
     DataManager dataManager;
+
+    string command;
 
     public ConsoleUI()
     {
@@ -35,7 +37,7 @@ public class ConsoleUI
                 .Title("Select a loop").AddChoices(dataManager.Loops));
             Console.WriteLine("Your selected loop: " + selectedLoop.Name); 
             
-            string command;
+           //string command;
 
             do{
                 // Select a stop 
@@ -61,6 +63,53 @@ public class ConsoleUI
                         "continue","end"
                     }));
                     
+            }while(command != "end");
+        }
+        else if(mode == "manager")
+        {
+       
+            do
+            {
+               
+                // Select whether to continue or end
+                command = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("What's do you want to do?")
+                    .AddChoices(new[]
+                    {
+                        "add stop","delete stop","list stops", "end" 
+                    }));
+
+                // Add stop to the route
+                if( command == "add stop")
+                {
+                    // Ask for a stop name
+                    var newStopName= AnsiConsole.Prompt(new TextPrompt<string>("Enter new stop name: "));
+                    dataManager.AddStop(new Stop(newStopName));
+
+                }else if (command == "delete stop")
+                {
+                    // Select a stop to delete
+                    Stop selectedStop = AnsiConsole.Prompt(new SelectionPrompt<Stop>()
+                        .Title("Select a stop")
+                        .AddChoices(dataManager.Stops));
+
+                    Console.WriteLine("Your selected stop: " + selectedStop.Name);
+                    dataManager.RemoveStop(selectedStop);
+                }
+                else if (command == "list stops")
+                {
+                    Console.WriteLine("List of stops:");
+                    
+                    var table = new Table();
+                    table.AddColumn("Stop Name");
+
+                    foreach (var stop in dataManager.Stops)
+                    {
+                        table.AddRow(stop.Name);
+                    }
+                    AnsiConsole.Write(table);
+                    Console.WriteLine("\n");
+                }
             }while(command != "end");
         }
     }
