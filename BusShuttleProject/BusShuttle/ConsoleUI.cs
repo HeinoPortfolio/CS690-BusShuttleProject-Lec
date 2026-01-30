@@ -76,7 +76,7 @@ public class ConsoleUI
                     .Title("What's do you want to do?")
                     .AddChoices(new[]
                     {
-                        "add stop","delete stop","list stops", "end" 
+                        "add stop", "delete stop", "list stops","show busiest stop", "end" 
                     }));
 
                 // Add stop to the route
@@ -109,6 +109,14 @@ public class ConsoleUI
                     }
                     AnsiConsole.Write(table);
                     Console.WriteLine("\n");
+                }
+                else if (command == "show busiest stop")
+                {
+                    var result = Reporter.FindBusiestStop(dataManager.PassengerData);
+                    
+                    // Display the result
+                    Console.WriteLine("THe busiest stop is: " + result.Name);
+
                 }
             }while(command != "end");
         }

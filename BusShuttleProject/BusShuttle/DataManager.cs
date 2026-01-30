@@ -52,6 +52,37 @@ namespace BusShuttle;
         Drivers.Add(new Driver("Jane Doe"));
 
         PassengerData = new List<PassengerData>();
+
+        if(File.Exists("passenger-data.txt"))
+        {
+            // Read from the file
+            var passengerFileContents = File.ReadAllLines("passenger-data.txt");
+
+            foreach(var line in passengerFileContents)
+            {
+                // Split the data line on ":"
+                var splitted = line.Split(":",
+                     StringSplitOptions.RemoveEmptyEntries);
+                
+                // Create a driver
+                var driverName = splitted[0];
+                var driver = new Driver(driverName);
+
+                // Create a loop
+                var loopName = splitted[1];
+                var loop = new Loop(loopName);
+
+                // Create a stop
+                var stopName = splitted[2];
+                var stop = new Stop(stopName);
+
+                // Number boarded
+                var boarded = int.Parse(splitted[3]);
+
+                PassengerData.Add(new PassengerData(boarded, stop, loop, driver));
+
+            }
+        }
     }
 
     public void AddNewPassengerData(PassengerData data)
